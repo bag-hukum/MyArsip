@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard Arsip</title>
+    <style>
+      :root {
+        --bg: #f4f5fa;
+        --cd: #fff;
+        --tx: #1f2937;
+        --mu: #6b7280;
+        --bd: #e5e7eb;
+        --pr: #4f46e5;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0f172a;
+          --cd: #1e293b;
+          --tx: #f1f5f9;
+          --mu: #94a3b8;
+          --bd: #334155;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font:
+          14px system-ui,
+          sans-serif;
+        background: var(--bg);
+        color: var(--tx);
+        display: flex;
+        min-height: 100vh;
+      }
+      aside {
+        width: 250px;
+        background: var(--cd);
+        border-right: 1px solid var(--bd);
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      aside h1 {
+        font-size: 16px;
+        margin: 0 0 10px;
+      }
+      main {
+        flex: 1;
+        padding: 20px;
+        min-width: 0;
+      }
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+        color: inherit;
+      }
+      .btn {
+        background: var(--pr);
+        color: #fff;
+        border: 0;
+        border-radius: 8px;
+        padding: 8px 14px;
+        cursor: pointer;
+      }
+      .btn.g {
+        background: transparent;
+        color: var(--tx);
+        border: 1px solid var(--bd);
+      }
+      .ki {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+      .ki i {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--c);
+      }
+      .ki span {
+        margin-left: auto;
+        color: var(--mu);
+        font-size: 12px;
+      }
+      .ki:hover {
+        background: var(--bg);
+      }
+      .ki.on {
+        background: var(--c);
+        color: #fff;
+      }
+      .ki.on i {
+        background: #fff;
+      }
+      .ki.on span {
+        color: #fff;
+      }
+      .bc {
+        color: var(--mu);
+        margin-bottom: 14px;
+      }
+      .bc b {
+        color: var(--tx);
+        cursor: pointer;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+        gap: 12px;
+      }
+      .cd {
+        background: var(--cd);
+        border: 1px solid var(--bd);
+        border-radius: 12px;
+        padding: 14px;
+        border-top: 4px solid var(--c, var(--pr));
+      }
+      .cd.sub {
+        cursor: pointer;
+      }
+      .cd.sub:hover {
+        box-shadow: 0 2px 10px #0002;
+      }
+      .cd.add {
+        border: 2px dashed var(--bd);
+        border-top: 2px dashed var(--bd);
+        display: grid;
+        place-items: center;
+        color: var(--mu);
+        cursor: pointer;
+        min-height: 90px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+      }
+      .row input,
+      .row select {
+        padding: 8px;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        background: var(--cd);
+      }
+      .mut {
+        color: var(--mu);
+        font-size: 12px;
+      }
+      .ic {
+        background: none;
+        border: 0;
+        cursor: pointer;
+        color: var(--mu);
+        padding: 2px 5px;
+      }
+      .it {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .empty {
+        text-align: center;
+        padding: 60px 10px;
+        color: var(--mu);
+      }
+      dialog {
+        border: 0;
+        border-radius: 14px;
+        padding: 20px;
+        width: min(440px, 92vw);
+        background: var(--cd);
+        color: var(--tx);
+      }
+      dialog::backdrop {
+        background: #0006;
+      }
+      dialog label {
+        display: block;
+        margin: 10px 0 4px;
+        font-weight: 600;
+        font-size: 13px;
+      }
+      dialog input[type="text"],
+      dialog input[type="number"],
+      dialog input[type="url"],
+      dialog textarea,
+      dialog input[type="file"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        background: var(--bg);
+      }
+      .sw {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+      .sw label {
+        margin: 0;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        cursor: pointer;
+        background: var(--c);
+        border: 3px solid transparent;
+      }
+      .sw input {
+        display: none;
+      }
+      .sw label:has(input:checked) {
+        border-color: var(--tx);
+      }
+      .src {
+        display: flex;
+        gap: 16px;
+        margin-top: 6px;
+      }
+      .src label {
+        font-weight: 400;
+        margin: 0;
+      }
+      .act {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 16px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      #lg {
+        margin: auto;
+        width: min(360px, 92vw);
+        background: var(--cd);
+        border: 1px solid var(--bd);
+        border-radius: 14px;
+        padding: 24px;
+      }
+      #lg h2 {
+        margin: 0 0 4px;
+      }
+      #lg input {
+        width: 100%;
+        padding: 10px;
+        margin-top: 4px;
+        border: 1px solid var(--bd);
+        border-radius: 8px;
+        background: var(--bg);
+      }
+      #lg label {
+        display: block;
+        margin-top: 12px;
+        font-weight: 600;
+        font-size: 13px;
+      }
+      #lg .btn {
+        width: 100%;
+        margin-top: 16px;
+      }
+      #le {
+        color: #dc2626;
+        margin-top: 10px;
+        min-height: 18px;
+      }
+      @media (max-width: 700px) {
+        body {
+          flex-direction: column;
+        }
+        aside {
+          width: 100%;
+          flex-direction: row;
+          flex-wrap: wrap;
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <form id="lg">
+      <h2>🔐 Masuk</h2>
+      <div class="mut">Dashboard Arsip</div>
+      <label>Username</label><input id="lu" autocomplete="username" required /><label
+        >Password</label
+      ><input id="lp" type="password" autocomplete="current-password" required /><button
+        class="btn"
+      >
+        Masuk
+      </button>
+      <div id="le"></div>
+    </form>
+    <aside hidden>
+      <h1>📁 Dashboard Arsip</h1>
+      <div id="sb"></div>
+      <button class="btn g" data-act="addK">+ Kategori</button
+      ><button class="btn g" id="lo" style="margin-top: auto">Keluar</button>
+    </aside>
+    <main id="mn" hidden></main>
+    <dialog id="md">
+      <form id="mf">
+        <h3 id="mt" style="margin: 0 0 4px"></h3>
+        <div id="mb"></div>
+        <div class="act">
+          <button type="button" class="btn g" onclick="md.close()">Batal</button
+          ><button class="btn">Simpan</button>
+        </div>
+      </form>
+    </dialog>
+    <script>
+      // Isi API_URL dengan URL Web App Apps Script (berakhiran /exec). Login dan data dikelola di backend.
+      const CONFIG = { API_URL: "https://script.google.com/macros/s/AKfycbzwZJ4wj-GAx-SB9MBA8R0V0DDn3fik88UtBntk9xSRFPUhW-KXwn_Nw_V5ebGCt7NC-g/exec", MAX_MB: 10 };
+      const WARNA = [
+        "#4f46e5",
+        "#0891b2",
+        "#16a34a",
+        "#d97706",
+        "#dc2626",
+        "#9333ea",
+        "#db2777",
+        "#0d9488",
+      ];
+      let D = { k: [], s: [], m: [] },
+        TOKEN = "",
+        snap = { k: {}, s: {}, m: {} };
+      const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+      const esc = (s) =>
+        String(s ?? "").replace(
+          /[&<>"']/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c],
+        );
+      const $ = (s) => document.querySelector(s);
+      let st = { k: null, s: null, q: "", th: "", ur: "az" },
+        onOk = null;
+
+      function modal(t, html, ok) {
+        $("#mt").textContent = t;
+        $("#mb").innerHTML = html;
+        onOk = ok;
+        md.showModal();
+      }
+      $("#mf").onsubmit = (e) => {
+        e.preventDefault();
+        if (onOk && onOk(new FormData(e.target)) !== false) md.close();
+      };
+      $("#mb").onchange = (e) => {
+        if (e.target.name === "tipe") {
+          $("#bf").hidden = e.target.value !== "file";
+          $("#bl").hidden = e.target.value !== "link";
+        }
+      };
+
+      function render() {
+        $("#sb").innerHTML = D.k
+          .map(
+            (k) =>
+              `<div class="ki ${k.id == st.k ? "on" : ""}" data-act="pilihK" data-id="${k.id}" style="--c:${k.w}"><i></i>${esc(k.n)}<span>${D.s.filter((s) => s.k == k.id).length}</span></div>`,
+          )
+          .join("");
+        const K = D.k.find((x) => x.id == st.k),
+          S = D.s.find((x) => x.id == st.s);
+        let h = "";
+        if (!K) {
+          h = `<div class="empty"><h2>Belum ada kategori</h2><p>Mulai dengan membuat kategori pertama Anda.</p><button class="btn" data-act="addK">+ Buat kategori</button></div>`;
+        } else if (!S) {
+          h =
+            `<div class="bc"><b data-act="home">Beranda</b> / ${esc(K.n)} <button class="ic" data-act="editK">✏️</button><button class="ic" data-act="delK">🗑️</button></div><div class="grid" style="--c:${K.w}">` +
+            D.s
+              .filter((s) => s.k == K.id)
+              .map(
+                (s) =>
+                  `<div class="cd sub" data-act="pilihS" data-id="${s.id}"><div class="it"><b>${esc(s.n)}</b><span><button class="ic" data-act="editS" data-id="${s.id}">✏️</button><button class="ic" data-act="delS" data-id="${s.id}">🗑️</button></span></div><div class="mut">${D.m.filter((m) => m.s == s.id).length} materi</div></div>`,
+              )
+              .join("") +
+            `<div class="cd add" data-act="addS">+ Sub menu</div></div>`;
+        } else {
+          let L = D.m.filter((m) => m.s == S.id);
+          const th = [...new Set(L.map((m) => m.t))].sort().reverse();
+          if (st.q)
+            L = L.filter((m) => (m.j + " " + m.ket).toLowerCase().includes(st.q.toLowerCase()));
+          if (st.th) L = L.filter((m) => m.t == st.th);
+          L.sort((a, b) => (st.ur === "az" ? a.j.localeCompare(b.j) : b.j.localeCompare(a.j)));
+          h =
+            `<div class="bc"><b data-act="home">Beranda</b> / <b data-act="pilihK" data-id="${K.id}">${esc(K.n)}</b> / ${esc(S.n)}</div>
+  <div class="row"><input id="q" placeholder="Cari judul…" value="${esc(st.q)}"><select id="th"><option value="">Semua tahun</option>${th.map((t) => `<option ${t == st.th ? "selected" : ""}>${t}</option>`).join("")}</select>
+  <select id="ur"><option value="az" ${st.ur === "az" ? "selected" : ""}>A–Z</option><option value="za" ${st.ur === "za" ? "selected" : ""}>Z–A</option></select><button class="btn" data-act="addM" style="margin-left:auto">+ Tambah materi</button></div>` +
+            (L.length
+              ? `<div class="grid" style="--c:${K.w}">` +
+                L.map(
+                  (
+                    m,
+                  ) => `<div class="cd"><div class="it"><b>${esc(m.j)}</b><span><button class="ic" data-act="editM" data-id="${m.id}">✏️</button><button class="ic" data-act="delM" data-id="${m.id}">🗑️</button></span></div>
+   <div class="mut">Tahun ${m.t}</div><p>${esc(m.ket)}</p>${m.link ? `<a href="${esc(m.link)}" target="_blank" rel="noopener">🔗 Buka link</a>` : `<span class="mut">📄 ${esc(m.nf)} (${m.uk} MB)</span>`}</div>`,
+                ).join("") +
+                `</div>`
+              : `<div class="empty">Belum ada materi.</div>`);
+        }
+        $("#mn").innerHTML = h;
+        const q = $("#q");
+        if (q) {
+          q.oninput = (e) => {
+            st.q = e.target.value;
+            render();
+            $("#q").focus();
+            $("#q").setSelectionRange(99, 99);
+          };
+          $("#th").onchange = (e) => {
+            st.th = e.target.value;
+            render();
+          };
+          $("#ur").onchange = (e) => {
+            st.ur = e.target.value;
+            render();
+          };
+        }
+      }
+
+      const formNama = (lbl, v = "") =>
+        `<label>${lbl}</label><input type="text" name="n" required value="${esc(v)}" autofocus>`;
+      const act = {
+        home() {
+          st.k = st.s = null;
+        },
+        pilihK(id) {
+          st.k = id;
+          st.s = null;
+          st.q = st.th = "";
+        },
+        pilihS(id) {
+          st.s = id;
+          st.q = st.th = "";
+        },
+        addK() {
+          kForm();
+        },
+        editK() {
+          kForm(D.k.find((x) => x.id == st.k));
+        },
+        delK() {
+          if (confirm("Hapus kategori beserta semua sub menu dan materinya?")) {
+            const ss = D.s.filter((s) => s.k == st.k).map((s) => s.id);
+            D.m = D.m.filter((m) => !ss.includes(m.s));
+            D.s = D.s.filter((s) => s.k != st.k);
+            D.k = D.k.filter((k) => k.id != st.k);
+            st.k = null;
+          }
+        },
+        addS() {
+          modal("Sub menu baru", formNama("Nama sub menu"), (f) => {
+            D.s.push({ id: uid(), k: st.k, n: f.get("n").trim() });
+            save();
+            render();
+          });
+        },
+        editS(id) {
+          const s = D.s.find((x) => x.id == id);
+          modal("Ubah sub menu", formNama("Nama sub menu", s.n), (f) => {
+            s.n = f.get("n").trim();
+            save();
+            render();
+          });
+        },
+        delS(id) {
+          if (confirm("Hapus sub menu beserta materinya?")) {
+            D.m = D.m.filter((m) => m.s != id);
+            D.s = D.s.filter((s) => s.id != id);
+          }
+        },
+        addM() {
+          mForm();
+        },
+        editM(id) {
+          mForm(D.m.find((x) => x.id == id));
+        },
+        delM(id) {
+          if (confirm("Hapus materi ini?")) D.m = D.m.filter((m) => m.id != id);
+        },
+      };
+      function kForm(k) {
+        modal(
+          k ? "Ubah kategori" : "Kategori baru",
+          formNama("Nama kategori", k?.n) +
+            `<label>Warna</label><div class="sw">${WARNA.map((w, i) => `<label style="--c:${w}"><input type="radio" name="w" value="${w}" ${(k ? k.w : WARNA[D.k.length % 8]) === w ? "checked" : ""}></label>`).join("")}</div>`,
+          (f) => {
+            if (k) {
+              k.n = f.get("n").trim();
+              k.w = f.get("w");
+            } else {
+              const n = { id: uid(), n: f.get("n").trim(), w: f.get("w") };
+              D.k.push(n);
+              st.k = n.id;
+              st.s = null;
+            }
+            save();
+            render();
+          },
+        );
+      }
+      function mForm(m) {
+        const lk = m?.link;
+        modal(
+          m ? "Ubah materi" : "Tambah materi",
+          `<label>Judul</label><input type="text" name="j" required value="${esc(m?.j)}">
+ <label>Tahun</label><input type="number" name="t" required min="1990" max="2100" value="${m?.t || new Date().getFullYear()}">
+ <label>Keterangan</label><textarea name="ket" rows="3">${esc(m?.ket)}</textarea>
+ <label>Sumber</label><div class="src"><label><input type="radio" name="tipe" value="file" ${lk ? "" : "checked"}> Upload file</label><label><input type="radio" name="tipe" value="link" ${lk ? "checked" : ""}> Tempel link</label></div>
+ <div id="bf" ${lk ? "hidden" : ""}><input type="file" name="file" style="margin-top:8px"><div class="mut">Maks ${CONFIG.MAX_MB} MB. Jika lebih besar, upload manual ke Google Drive lalu tempel link.</div></div>
+ <div id="bl" ${lk ? "" : "hidden"}><input type="url" name="link" placeholder="https://drive.google.com/…" value="${esc(lk)}" style="margin-top:8px;width:100%;padding:8px;border:1px solid var(--bd);border-radius:8px;background:var(--bg)"></div>`,
+          (f) => {
+            const o = { j: f.get("j").trim(), t: +f.get("t"), ket: f.get("ket").trim() };
+            if (f.get("tipe") === "link") {
+              if (!f.get("link")) {
+                alert("Isi link terlebih dahulu.");
+                return false;
+              }
+              o.link = f.get("link");
+              o.nf = "";
+              o.uk = 0;
+            } else {
+              const fl = f.get("file");
+              if (fl && fl.size) {
+                const mb = fl.size / 1048576;
+                if (mb > CONFIG.MAX_MB) {
+                  alert(
+                    `File ${mb.toFixed(1)} MB melebihi batas ${CONFIG.MAX_MB} MB. Upload manual ke Drive lalu tempel link.`,
+                  );
+                  return false;
+                }
+                o.nf = fl.name;
+                o.uk = mb.toFixed(2);
+                o.link = "";
+                o.fl = fl;
+              } else if (!m || m.link) {
+                alert("Pilih file terlebih dahulu.");
+                return false;
+              }
+            }
+            const fin = () => {
+              if (m) Object.assign(m, o);
+              else D.m.push({ id: uid(), s: st.s, ...o });
+              save();
+              render();
+            };
+            if (o.fl) {
+              const fl = o.fl;
+              delete o.fl;
+              const b = $("#mf .btn:not(.g)");
+              b.disabled = true;
+              b.textContent = "Mengunggah…";
+              const r = new FileReader();
+              r.onload = () =>
+                api("upload", {
+                  name: fl.name,
+                  mime: fl.type,
+                  b64: r.result.split(",")[1],
+                  kat: D.k.find((x) => x.id == st.k).n,
+                  sub: D.s.find((x) => x.id == st.s).n,
+                })
+                  .then((x) => {
+                    o.link = x.url;
+                    md.close();
+                    fin();
+                  })
+                  .catch((x) => alert(x.message))
+                  .finally(() => {
+                    b.disabled = false;
+                    b.textContent = "Simpan";
+                  });
+              r.readAsDataURL(fl);
+              return false;
+            }
+            fin();
+          },
+        );
+      }
+
+      document.addEventListener("click", (e) => {
+        const a = e.target.closest("[data-act]");
+        if (!a) return;
+        e.stopPropagation();
+        act[a.dataset.act]?.(a.dataset.id);
+        save();
+        render();
+      });
+
+      const ss = (k, v) => {
+        try {
+          v == null ? sessionStorage.removeItem(k) : sessionStorage.setItem(k, v);
+        } catch (x) {}
+      };
+      async function api(action, data = {}) {
+        if (!CONFIG.API_URL) throw Error("API_URL belum diisi di CONFIG.");
+        const r = await fetch(CONFIG.API_URL, {
+          method: "POST",
+          body: JSON.stringify({ action, token: TOKEN, ...data }),
+        });
+        const j = await r.json();
+        if (!j.ok) {
+          if (j.err === "SESI") masuk(false, "Sesi berakhir, silakan masuk lagi.");
+          throw Error(j.err === "SESI" ? "Sesi berakhir." : j.err);
+        }
+        return j.data;
+      }
+      const mk = () => {
+        const o = {};
+        for (const t of ["k", "s", "m"]) {
+          o[t] = {};
+          D[t].forEach((r) => (o[t][r.id] = JSON.stringify(r)));
+        }
+        return o;
+      };
+      function save() {
+        // kirim hanya perubahan (tambah/ubah/hapus) ke backend
+        const n = mk(),
+          ops = [];
+        for (const t in n) {
+          for (const id in n[t])
+            if (n[t][id] !== snap[t][id]) ops.push({ op: "set", t, row: JSON.parse(n[t][id]) });
+          for (const id in snap[t]) if (!n[t][id]) ops.push({ op: "del", t, id });
+        }
+        snap = n;
+        if (ops.length)
+          api("batch", { ops }).catch((x) => alert("Gagal menyimpan ke server: " + x.message));
+      }
+      async function muat() {
+        const d = await api("load");
+        D = { k: d.k, s: d.s, m: d.m };
+        snap = mk();
+      }
+      const masuk = (ok, msg) => {
+        if (!ok) {
+          TOKEN = "";
+          ss("tk");
+          D = { k: [], s: [], m: [] };
+          st.k = st.s = null;
+        }
+        $("#lg").hidden = ok;
+        document.querySelector("aside").hidden = !ok;
+        $("#mn").hidden = !ok;
+        $("#le").textContent = msg || "";
+        if (ok) render();
+      };
+      $("#lg").onsubmit = async (e) => {
+        e.preventDefault();
+        $("#le").textContent = "Memproses…";
+        try {
+          const r = await api("login", { u: $("#lu").value.trim(), p: $("#lp").value });
+          TOKEN = r.token;
+          ss("tk", TOKEN);
+          await muat();
+          $("#lp").value = "";
+          masuk(true);
+        } catch (x) {
+          $("#le").textContent = x.message;
+        }
+      };
+      $("#lo").onclick = () => masuk(false);
+      // Penghalang ringan: menonaktifkan klik kanan, F12, Ctrl+U/S/Shift+I (tetap bisa dilewati oleh yang paham teknis)
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "F12" ||
+          (e.ctrlKey && ["u", "s"].includes(e.key.toLowerCase())) ||
+          (e.ctrlKey && e.shiftKey && ["i", "j", "c"].includes(e.key.toLowerCase()))
+        )
+          e.preventDefault();
+      });
+      try {
+        TOKEN = sessionStorage.getItem("tk") || "";
+      } catch (x) {}
+      (async () => {
+        if (TOKEN && CONFIG.API_URL) {
+          try {
+            await muat();
+            masuk(true);
+            return;
+          } catch (x) {}
+        }
+        masuk(false);
+      })();
+    </script>
+  </body>
+</html>
